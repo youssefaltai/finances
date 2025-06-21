@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Money from './Money';
+import { colors, spacing, typography } from '@finances/design';
 
 interface GoalCardProps {
   title: string;
@@ -30,33 +31,33 @@ const GoalCard: React.FC<GoalCardProps> = ({ title, target, current }) => {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.background,
+    borderRadius: spacing.md,
+    padding: spacing.lg,
     minWidth: 160,
   },
   title: {
-    fontWeight: 'bold',
-    marginBottom: 2,
+    fontWeight: typography.fontWeight.bold,
+    marginBottom: spacing.xs,
   },
   target: {
-    color: '#6b7280',
-    fontSize: 12,
+    color: colors.textSecondary,
+    fontSize: typography.fontSize.xs,
   },
   current: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 2,
+    fontWeight: typography.fontWeight.bold,
+    fontSize: typography.fontSize.md,
+    marginBottom: spacing.xs,
   },
   status: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: typography.fontSize.xs,
+    fontWeight: typography.fontWeight.bold,
   },
   targetMet: {
-    color: '#22c55e',
+    color: colors.success,
   },
   targetLeft: {
-    color: '#ef4444',
+    color: colors.danger,
   },
 });
 

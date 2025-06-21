@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Money from './Money';
+import { colors, spacing, typography } from '@finances/design';
 
 interface AccountCardProps {
   label: string;
@@ -19,18 +20,18 @@ const AccountCard: React.FC<AccountCardProps> = ({ label, value }) => {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.background,
+    borderRadius: spacing.md,
+    padding: spacing.lg,
     minWidth: 120,
   },
   label: {
-    fontWeight: 'bold',
-    marginBottom: 2,
+    fontWeight: typography.fontWeight.bold,
+    marginBottom: spacing.xs,
   },
   value: {
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontWeight: typography.fontWeight.bold,
+    fontSize: typography.fontSize.md,
   },
 });
 

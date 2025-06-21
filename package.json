@@ -4,8 +4,14 @@
   "name": "finances",
   "version": "1.0.0",
   "license": "MIT",
+  "scripts": {
+    "dev:packages": "concurrently \"yarn workspace @finances/business watch\" \"yarn workspace @finances/design watch\""
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
-  ] 
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }

@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Dimensions, Text } from 'react-native';
+import { colors, spacing, typography } from '@finances/design';
 
 const { width } = Dimensions.get('window');
 const FAB_SIZE = 64;
@@ -12,6 +13,10 @@ export default function TabLayout() {
             <Tabs
                 screenOptions={{
                     headerShown: false,
+                    tabBarActiveTintColor: colors.primary,
+                    tabBarLabelStyle: {
+                        fontWeight: typography.fontWeight.bold,
+                    },
                 }}
                 tabBar={(props) => <CustomTabBar {...props} />}
             >
@@ -19,34 +24,34 @@ export default function TabLayout() {
                     name="dashboard"
                     options={{
                         title: 'Dashboard',
-                        tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+                        tabBarIcon: ({ color }) => <FontAwesome size={spacing.xxl} name="home" color={color} />,
                     }}
                 />
                 <Tabs.Screen
                     name="transactions"
                     options={{
                         title: 'Transactions',
-                        tabBarIcon: ({ color }) => <FontAwesome size={28} name="exchange" color={color} />,
+                        tabBarIcon: ({ color }) => <FontAwesome size={spacing.xxl} name="exchange" color={color} />,
                     }}
                 />
                 <Tabs.Screen
                     name="goals"
                     options={{
                         title: 'Goals',
-                        tabBarIcon: ({ color }) => <FontAwesome size={28} name="bullseye" color={color} />,
+                        tabBarIcon: ({ color }) => <FontAwesome size={spacing.xxl} name="bullseye" color={color} />,
                     }}
                 />
                 <Tabs.Screen
                     name="settings"
                     options={{
                         title: 'Settings',
-                        tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
+                        tabBarIcon: ({ color }) => <FontAwesome size={spacing.xxl} name="cog" color={color} />,
                     }}
                 />
             </Tabs>
 
             <TouchableOpacity style={styles.fab} onPress={() => alert('FAB pressed')}>
-                <Ionicons name="add" size={28} color="white" />
+                <Ionicons name="add" size={spacing.xxl} color="white" />
             </TouchableOpacity>
         </>
     );
@@ -82,8 +87,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                             onPress={onPress}
                             style={styles.tab}
                         >
-                            {icon?.({ color: isFocused ? '#2563eb' : '#888', size: 28, focused: isFocused })}
-                            <Text style={{ fontSize: 12, color: isFocused ? '#2563eb' : '#888', marginTop: 4 }}>
+                            {icon?.({ color: isFocused ? colors.primary : colors.text, size: spacing.xxl, focused: isFocused })}
+                            <Text style={{ fontSize: typography.fontSize.xs, color: isFocused ? colors.primary : colors.text, marginTop: spacing.xs }}>
                                 {label}
                             </Text>
                         </TouchableOpacity>
@@ -99,13 +104,13 @@ const styles = StyleSheet.create({
     tabBar: {
         flexDirection: 'row',
         height: 80,
-        backgroundColor: '#fff',
+        backgroundColor: colors.background,
         alignItems: 'center',
         justifyContent: 'space-around',
-        paddingHorizontal: 8,
-        paddingBottom: 16,
+        paddingHorizontal: spacing.sm,
+        paddingBottom: spacing.lg,
         borderTopWidth: 1,
-        borderTopColor: '#000'
+        borderTopColor: colors.text,
     },
     tab: {
         flex: 1,
@@ -121,7 +126,7 @@ const styles = StyleSheet.create({
         width: FAB_SIZE,
         height: FAB_SIZE,
         borderRadius: FAB_SIZE / 2,
-        backgroundColor: '#007AFF',
+        backgroundColor: colors.primary,
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 999,

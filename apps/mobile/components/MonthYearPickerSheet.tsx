@@ -2,44 +2,29 @@ import React, { useRef, useEffect, useState } from 'react';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { colors, spacing, typography } from '@finances/design';
+import { months, SelectedDate, useMonthPickerStore, years } from '@/store/monthPicker';
 
-interface MonthYearPickerSheetProps {
-  visible: boolean;
-  months: string[];
-  years: number[];
-  selectedMonth: number;
-  selectedYear: number;
-  onConfirm: (month: number, year: number) => void;
-  onClose: () => void;
-}
-
-const MonthYearPickerSheet: React.FC<MonthYearPickerSheetProps> = ({
-  visible,
-  months,
-  years,
-  selectedMonth,
-  selectedYear,
-  onConfirm,
-  onClose,
-}) => {
+const MonthYearPickerSheet: React.FC = () => {
+  const { isVisible, options, hide } = useMonthPickerStore();
+  const [localDate, setLocalDate] = useState<SelectedDate>(options?.selectedDate ?? { selectedMonth: 0, selectedYear: 0 });
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [localMonth, setLocalMonth] = useState(selectedMonth);
-  const [localYear, setLocalYear] = useState(selectedYear);
 
   useEffect(() => {
-    if (visible) {
+    if (isVisible && options) {
+      setLocalDate(options.selectedDate);
       bottomSheetRef.current?.expand();
     } else {
       bottomSheetRef.current?.close();
     }
-  }, [visible]);
+  }, [isVisible, options]);
 
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={visible ? 0 : -1}
+      index={isVisible ? 0 : -1}
       enablePanDownToClose
-      onClose={onClose}
+      onClose={hide}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
@@ -49,13 +34,13 @@ const MonthYearPickerSheet: React.FC<MonthYearPickerSheetProps> = ({
         />
       )}
     >
-      <BottomSheetView style={styles.container}>
+      <BottomSheetView style={styles.content}>
         <Text style={styles.title}>Select Month & Year</Text>
-        <View style={styles.pickerContainer}>
+        <View style={styles.pickersContainer}>
           <View style={styles.pickerWrapper}>
             <Picker
-              selectedValue={localMonth}
-              onValueChange={setLocalMonth}
+              selectedValue={localDate.selectedMonth}
+              onValueChange={(itemValue) => setLocalDate(prev => ({ ...prev, selectedMonth: itemValue }))}
             >
               {months.map((month, idx) => (
                 <Picker.Item label={month} value={idx} key={month} />
@@ -64,8 +49,8 @@ const MonthYearPickerSheet: React.FC<MonthYearPickerSheetProps> = ({
           </View>
           <View style={styles.pickerWrapper}>
             <Picker
-              selectedValue={localYear}
-              onValueChange={setLocalYear}
+              selectedValue={localDate.selectedYear}
+              onValueChange={(itemValue) => setLocalDate(prev => ({ ...prev, selectedYear: itemValue }))}
             >
               {years.map((year) => (
                 <Picker.Item label={year.toString()} value={year} key={year} />
@@ -75,7 +60,12 @@ const MonthYearPickerSheet: React.FC<MonthYearPickerSheetProps> = ({
         </View>
         <Pressable
           style={styles.confirmButton}
-          onPress={() => onConfirm(localMonth, localYear)}
+          onPress={() => {
+            if (options) {
+              options.onConfirm(localDate);
+              hide();
+            }
+          }}
         >
           <Text style={styles.confirmButtonText}>Confirm</Text>
         </Pressable>
@@ -85,33 +75,33 @@ const MonthYearPickerSheet: React.FC<MonthYearPickerSheetProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    padding: 24,
-    gap: 16,
-    backgroundColor: 'white',
+    padding: spacing.xl,
+    gap: spacing.lg,
+    backgroundColor: colors.white,
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontWeight: typography.fontWeight.bold,
+    fontSize: typography.fontSize.lg,
   },
-  pickerContainer: {
+  pickersContainer: {
     flexDirection: 'row',
-    gap: 16,
+    gap: spacing.lg,
   },
   pickerWrapper: {
     flex: 1,
   },
   confirmButton: {
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: colors.primary,
+    borderRadius: spacing.sm,
+    padding: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   confirmButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: colors.white,
+    fontWeight: typography.fontWeight.bold,
   },
 });
 

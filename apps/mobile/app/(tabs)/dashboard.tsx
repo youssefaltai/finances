@@ -3,58 +3,59 @@ import SummaryCard from '@/components/SummaryCard';
 import GoalCard from '@/components/GoalCard';
 import BudgetCard from '@/components/BudgetCard';
 import AccountCard from '@/components/AccountCard';
-import React from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Money from '@/components/Money';
-import MonthYearPickerSheet from '@/components/MonthYearPickerSheet';
+import { months, SelectedDate, useMonthPickerStore } from '@/store/monthPicker';
+import { colors, spacing, typography } from '@finances/design';
 
-
-const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-const YEARS = [2023, 2024, 2025, 2026, 2027];
+const now = new Date();
+const currentMonth = now.getMonth();
+const currentYear = now.getFullYear();
+const currentDate: SelectedDate = {
+  selectedMonth: currentMonth,
+  selectedYear: currentYear,
+};
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
-  const [selectedMonth, setSelectedMonth] = React.useState(5); // June (0-based)
-  const [selectedYear, setSelectedYear] = React.useState(2025);
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const { show } = useMonthPickerStore();
 
   // Hide the app bar showing the route
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
 
   // Mock data
-  const netWorth = 9711.45;
+  const netWorth = 97118.45;
   const summary = [
-    { label: 'Income', value: 12050, type: 'income' },
-    { label: 'Expenses', value: 2067.36, type: 'expense' },
+    { label: 'Income', value: 120500, type: 'income' },
+    { label: 'Expenses', value: 20673.36, type: 'expense' },
   ];
   const goals = [
-    { title: 'New Gaming PC', target: 1500, current: 750 },
-    { title: 'Summer Trip', target: 800, current: 400 },
-    { title: 'New Phone', target: 1000, current: 600 },
+    { title: 'House Down Payment', target: 103630, current: 96000 },
+    { title: 'Furniture', target: 0, current: 0 },
   ];
   const budgets = [
-    { label: 'Needs', value: 48.62, status: 'available' },
-    { label: 'Wants', value: -428.98, status: 'overspent' },
+    { label: 'Needs', value: 486.62, status: 'available' },
+    { label: 'Wants', value: -4289.98, status: 'overspent' },
   ];
   const accounts = [
-    { label: 'NBE', value: 6271.93 },
-    { label: 'HSBC', value: 181.61 },
-    { label: 'Cash', value: 3100 },
+    { label: 'NBE', value: 62717.93 },
+    { label: 'HSBC', value: 1816.61 },
+    { label: 'Cash', value: 31000 },
   ];
 
-  const handleOpenSheet = () => setIsSheetOpen(true);
-  const handleCloseSheet = () => setIsSheetOpen(false);
-  const handleConfirmSheet = (month: number, year: number) => {
-    setSelectedMonth(month);
-    setSelectedYear(year);
-    setIsSheetOpen(false);
+  const handleOpenSheet = () => {
+    show({
+      selectedDate,
+      onConfirm: (newSelectedDate) => {
+        setSelectedDate(newSelectedDate);
+      },
+    });
   };
 
   return (
@@ -64,7 +65,7 @@ export default function DashboardScreen() {
           <Text style={[styles.title, styles.sectionPadding]}>Dashboard</Text>
           <View style={[styles.row, styles.sectionPadding, { justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={styles.subtitle}>
-              Showing data for <Text style={styles.bold}>{MONTHS[selectedMonth]} {selectedYear}</Text>
+              Showing data for <Text style={styles.bold}>{months[selectedDate.selectedMonth]} {selectedDate.selectedYear}</Text>
             </Text>
             <Pressable onPress={handleOpenSheet} hitSlop={8} style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
               <Text style={styles.link}>Change</Text>
@@ -133,15 +134,6 @@ export default function DashboardScreen() {
           />
         </View>
       </ScrollView>
-      <MonthYearPickerSheet
-        visible={isSheetOpen}
-        months={MONTHS}
-        years={YEARS}
-        selectedMonth={selectedMonth}
-        selectedYear={selectedYear}
-        onConfirm={handleConfirmSheet}
-        onClose={handleCloseSheet}
-      />
     </SafeAreaView>
   );
 }
@@ -149,48 +141,49 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
   },
   contentContainer: {
-    gap: 32,
+    gap: spacing.xxl,
+    paddingBottom: spacing.xxl * 2,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: typography.fontSize.header,
+    fontWeight: typography.fontWeight.bold,
   },
   subtitle: {
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   bold: {
-    fontWeight: 'bold',
-    color: '#222',
+    fontWeight: typography.fontWeight.bold,
+    color: colors.text,
   },
   link: {
-    color: '#2563eb',
-    fontWeight: 'bold',
+    color: colors.primary,
+    fontWeight: typography.fontWeight.bold,
   },
   section: {
     flexDirection: 'column',
-    gap: 8,
+    gap: spacing.sm,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: typography.fontSize.xl,
+    fontWeight: typography.fontWeight.bold,
   },
   netWorth: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: typography.fontSize.title,
+    fontWeight: typography.fontWeight.bold,
   },
   row: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
     justifyContent: 'space-between',
   },
   sectionPadding: {
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing.lg,
   },
   scrollableList: {
-    paddingHorizontal: 16,
-    gap: 8,
+    paddingHorizontal: spacing.lg,
+    gap: spacing.md,
   },
 });

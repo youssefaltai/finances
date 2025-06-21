@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Money from './Money';
+import { colors, spacing, typography } from '@finances/design';
 
 interface SummaryCardProps {
   label: string;
@@ -22,24 +23,24 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ label, value, type }) => {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.background,
+    borderRadius: spacing.md,
+    padding: spacing.lg,
     minWidth: 140,
   },
   label: {
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontWeight: typography.fontWeight.bold,
+    marginBottom: spacing.xs,
   },
   income: {
-    color: '#22c55e',
+    color: colors.success,
   },
   expense: {
-    color: '#ef4444',
+    color: colors.danger,
   },
   value: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: typography.fontSize.md,
+    fontWeight: typography.fontWeight.bold,
   },
 });
 
